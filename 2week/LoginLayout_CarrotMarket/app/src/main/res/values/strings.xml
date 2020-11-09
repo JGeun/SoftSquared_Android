@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">studyKotlin</string>
+
+    <string name="myApp">나의 당근</string>
+
+    <string name="showProfile">프로필 보기</string>
+
+    <string name="list">판매내역</string>
+    <string name="bag">구매내역</string>
+    <string name="heart">관심목록</string>
+
+    <string name="location">내 동네 설정</string>
+    <string name="locationAuthorization">동네 인증하기</string>
+    <string name="keywordAlarm">키워드 알림</string>
+    <string name="collection">모아보기</string>
+
+    <string name="writePost">동네생활 글</string>
+    <string name="writeComment">동네생활 댓글</string>
+    <string name="listFavorite">동네생활 주제 목록</string>
+
+    <string name="inviteFriend">친구초대</string>
+    <string name="shareMarket">당근마켓 공유</string>
+    <string name="notice">공지사항</string>
+    <string name="question">자주 묻는 질문</string>
+    <string name="setting">앱 설정</string>
+</resources>

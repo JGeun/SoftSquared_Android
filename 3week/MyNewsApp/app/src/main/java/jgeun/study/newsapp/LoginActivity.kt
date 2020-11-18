@@ -23,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
         var user = auth.currentUser
         if(user != null){
             val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
         }else{
             btn_login.setOnClickListener{
@@ -41,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginEmail(){
         btn_login.setOnClickListener(View.OnClickListener {
+            Log.d("LoginActivityEmail", "Click")
             val email = et_email.text.toString()
             val password = et_passWd.text.toString()
             if(!email.equals("") && !password.equals("")) {
@@ -49,7 +51,8 @@ class LoginActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success")
-                            startActivity(Intent(this, MainActivity::class.java))
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
 
                         } else {
                             // If sign in fails, display a message to the user.

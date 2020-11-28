@@ -1,5 +1,6 @@
 package jgeun.study.listviewstudy
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

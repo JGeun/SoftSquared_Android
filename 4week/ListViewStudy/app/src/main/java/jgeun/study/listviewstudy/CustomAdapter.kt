@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior.getTag
 import androidx.core.content.ContextCompat.startActivity
 import kotlinx.android.synthetic.main.activity_main.view.*

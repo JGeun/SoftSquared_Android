@@ -29,6 +29,7 @@ class ModifyActivity : AppCompatActivity() {
             val goMain = Intent(this, MainActivity::class.java)
             goMain.putExtra("arrayList", businessCardArrayList)
             startActivity(goMain)
+            finish()
         }
     }
 }

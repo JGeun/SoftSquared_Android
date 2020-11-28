@@ -41,7 +41,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginEmail(){
-        btn_login.setOnClickListener(View.OnClickListener {
             Log.d("LoginActivityEmail", "Click")
             val email = et_email.text.toString()
             val password = et_passWd.text.toString()
@@ -65,6 +64,5 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
             }
-        })
     }
 }

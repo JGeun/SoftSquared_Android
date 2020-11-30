@@ -15,15 +15,15 @@ class ModifyActivity : AppCompatActivity() {
         setContentView(R.layout.activity_modify)
 
         btn_modify.setOnClickListener {
-            val intent = Intent()
-            val index = intent.getIntExtra("index", 1)
-            Log.d("MainActivityCheck", index.toString())
+            val getContentIntent = intent
+            val index = getContentIntent.getIntExtra("index", 1)
+            Log.d("MainActivityCheck", "modify: " + index.toString())
 
-            intent.putExtra("index", index)
-            intent.putExtra("title", et_mTitle.text.toString())
-            intent.putExtra("contents", et_mContents.text.toString())
+            getContentIntent.putExtra("index", index)
+            getContentIntent.putExtra("title", et_mTitle.text.toString())
+            getContentIntent.putExtra("contents", et_mContents.text.toString())
 
-            setResult(Activity.RESULT_OK, intent)
+            setResult(Activity.RESULT_OK, getContentIntent)
             finish()
             Log.d("MainActivityCheck", "Modify: " + et_mTitle.text.toString() + " / " + et_mContents.text.toString())
         }

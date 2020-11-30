@@ -27,16 +27,16 @@
                     android:layout_height="match_parent" />
 
                 <TextView
-                    android:id="@+id/news_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:background="#77000000"
-                    android:gravity="center"
-                    android:layout_gravity="bottom"
-                    android:text="Title"
-                    android:textColor="#ffffff"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                android:id="@+id/news_title"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#77000000"
+                android:gravity="center"
+                android:layout_gravity="bottom"
+                android:text="Title"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
                 <CheckBox
                     android:id="@+id/cb_delete"

@@ -34,14 +34,14 @@
             android:layout_height="28dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="3dp"
-            android:layout_toStartOf="@id/btn_profile"
-            android:layout_toLeftOf="@id/btn_profile"
+            android:layout_toStartOf="@id/btn_logout"
+            android:layout_toLeftOf="@id/btn_logout"
             android:clickable="true"
             android:src="@drawable/musictone"
             android:tag="musicPlay" />
 
         <ImageView
-            android:id="@+id/btn_profile"
+            android:id="@+id/btn_logout"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_alignParentRight="true"

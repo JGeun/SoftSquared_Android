@@ -26,6 +26,10 @@ import org.json.JSONObject
 import java.io.IOException
 import java.net.URI
 import java.net.URL
+import java.util.*
+import java.util.Arrays.sort
+import java.util.Collections.sort
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivityCheck"
@@ -33,13 +37,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var myDataset : Array<String>
     private lateinit var queue : RequestQueue;
     private val list = ArrayList<NewsItem>()
+    private val removeRvIndexList = ArrayList<Int>()
 
     private lateinit var layoutParam : ViewGroup.LayoutParams
     private var mediaPlayer : MediaPlayer? = null
     private var pausePosition : Int = 0
 
     private val REQUEST_MODIFY: Int = 10
-    private val REQUEST_ADD: Int = 20
+    private val REQUEST_ADDITEM: Int = 20
+    private val REQUEST_DELETE: Int = 30
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,16 +84,35 @@ class MainActivity : AppCompatActivity() {
         }
 
         val newsList = list
-        rv_newsPanel.adapter = NewsAdapter(this, newsList)
+        rv_newsPanel.adapter = NewsAdapter(this, newsList, removeRvIndexList)
         rv_newsPanel.layoutManager = LinearLayoutManager(this)
         rv_newsPanel.setHasFixedSize(true)
-        btn_addItem.attachToRecyclerView(rv_newsPanel);
 
-        btn_profile.setOnClickListener {
+        btn_logout.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
+        }
+
+
+
+        btn_addItem.attachToRecyclerView(rv_newsPanel);
+        btn_addItem.setOnClickListener{
+            if(btn_addItem.getTag().toString().equals("add")){
+                val intent = Intent(this, AddItemActivity::class.java)
+                startActivityForResult(intent, REQUEST_ADDITEM)
+            }else{
+                val size = removeRvIndexList.size-1
+                for(i in size downTo 0 step 1){
+                    list.removeAt(removeRvIndexList.get(i))
+                }
+                removeRvIndexList.clear()
+                btn_addItem.setTag("add")
+                btn_addItem.setImageDrawable(resources.getDrawable(R.drawable.ic_additem))
+                rv_newsPanel.adapter?.notifyDataSetChanged();
+            }
+
         }
     }
 
@@ -116,7 +141,6 @@ class MainActivity : AppCompatActivity() {
         return jsonString
     }
 
-
     override fun onPause() {
         super.onPause()
 
@@ -130,20 +154,22 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == REQUEST_MODIFY && resultCode == Activity.RESULT_OK) {
-            val getModifyIntent = intent
-            val index = getModifyIntent.getIntExtra("index", 1)
+            val index: Int = data!!.getIntExtra("index", 1)
             Log.d(TAG, "기존의: " + list.get(index).title + " / "  + list.get(index).content)
 
-            val title :String? = getModifyIntent.getStringExtra("title")
-            val content :String? = getModifyIntent.getStringExtra("title")
+            val title :String? = data!!.getStringExtra("title")
+            val content :String? = data!!.getStringExtra("title")
             Log.d(TAG, "바꿀: " + index.toString()+ " " + title +" / " + content)
             list.get(index).title = title
             list.get(index).content = content
 
             rv_newsPanel.adapter?.notifyDataSetChanged();
             Log.d(TAG, "바뀐: " + list.get(index).title + " / "  + list.get(index).content)
-        }else if(requestCode == REQUEST_ADD && resultCode == Activity.RESULT_OK){
-
+        }else if(requestCode == REQUEST_ADDITEM && resultCode == Activity.RESULT_OK){
+            val title :String? = data!!.getStringExtra("title")
+            val content :String? = data!!.getStringExtra("title")
+            val uri: Uri = Uri.parse("android.resource://jgeun.study.newsapp/drawable/splash_image.png");
+            list.add(NewsItem(uri, title, content))
         }
     }
 }

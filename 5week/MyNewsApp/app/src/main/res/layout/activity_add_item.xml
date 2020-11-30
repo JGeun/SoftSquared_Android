@@ -4,21 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ModifyActivity">
+    tools:context=".AddItemActivity">
 
     <TextView
-        android:id="@+id/tv_mTitle"
+        android:id="@+id/tv_newTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="120dp"
-        android:text="title"
+        android:text="name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/et_mTitle"
+        android:id="@+id/et_newTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="110dp"
@@ -26,11 +26,11 @@
         android:hint="title"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_mTitle"
+        app:layout_constraintStart_toEndOf="@+id/tv_newTitle"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_mContents"
+        android:id="@+id/tv_newContents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
@@ -38,10 +38,10 @@
         android:layout_marginTop="110dp"
         android:text="contents"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_mTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_newTitle" />
 
     <EditText
-        android:id="@+id/et_mContents"
+        android:id="@+id/et_newContents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
@@ -49,16 +49,17 @@
         android:hint="contents"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_mContents"
-        app:layout_constraintTop_toBottomOf="@+id/et_mTitle" />
+        app:layout_constraintStart_toEndOf="@+id/tv_newContents"
+        app:layout_constraintTop_toBottomOf="@+id/et_newTitle" />
 
     <Button
-        android:id="@+id/btn_modify"
+        android:id="@+id/btn_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="modify"
+        android:text="add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_mContents" />
+        app:layout_constraintTop_toBottomOf="@+id/et_newContents" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

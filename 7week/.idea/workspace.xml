@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da03fbc4-cf05-4eea-845c-383ccfb89013" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../6week/studyThread/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../6week/studyThread/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../5week/MyNewsApp/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../5week/MyNewsApp/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../5week/MyNewsApp/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../5week/MyNewsApp/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../5week/MyNewsApp/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../5week/MyNewsApp/.idea/misc.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,9 +41,9 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="711" y="474" key="FileChooserDialogImpl" timestamp="1608282420362">
+    <state x="711" y="474" key="FileChooserDialogImpl" timestamp="1608472834310">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="711" y="474" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1608282420362" />
+    <state x="711" y="474" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1608472834310" />
   </component>
 </project>

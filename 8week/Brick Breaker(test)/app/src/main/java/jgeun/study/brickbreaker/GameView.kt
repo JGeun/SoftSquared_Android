@@ -30,19 +30,24 @@ class GameView : View {
     private var isHighScore:Boolean = false
     private var pauseImage : Bitmap
 
-    private var blockPosXArray : ArrayList<Float> = ArrayList()
+    private var blockWidth: Float
+    private var blockHeight: Float
+    private var blockPosXArray: ArrayList<Float> = ArrayList()
+    private var blockPosYArray : ArrayList<Float> = ArrayList()
     private var blockArray : ArrayList<Block> = ArrayList()
     private var blockCount = 40
+    private var blockLife = 1
+
+    private lateinit var blockThread:BlockThread
 
     private var ball: Ball
+    private var ballCount: Int = 1
     private var ballArray : ArrayList<Ball> = ArrayList()
     private var ballImageArray : ArrayList<Bitmap> = ArrayList()
     private lateinit var ballThread: BallThread
     private var ballThreadArray: ArrayList<BallThread> = ArrayList()
     private var ballPosX:Float
     private var ballPosY:Float
-
-    private var blockThread:BlockThread = BlockThread()
 
     private var bubbleImageArray :ArrayList<Bitmap> = ArrayList()
 
@@ -78,8 +83,16 @@ class GameView : View {
             highScore = sharedPreferences.getInt("userScore", 0)
         }
 
-        var block: Block = Block(10F+(screenWidth/6-10), 500F, screenWidth/6-15, (screenGameBottom-screenGameTop).toInt()/9-10, true)
-        blockArray.add(block)
+        blockWidth = screenWidth.toFloat()/6
+        blockHeight = (screenGameBottom-screenGameTop)/9
+
+        for(i in 0 until 6){
+            blockPosXArray.add(blockWidth*i+10F)
+        }
+
+        blockDown()
+        blockAdd()
+
 
         ball = Ball(screenWidth.toFloat()/2 - screenWidth.toFloat()/64, screenGameBottom-screenHeight.toFloat()/128-10F, screenWidth/32, screenHeight/64)
         ballPosX = screenWidth.toFloat()/2
@@ -93,8 +106,6 @@ class GameView : View {
             ballImageArray.add(ballImage)
         }
 
-        blockThread.start()
-        
         var bubbleGreenImage = BitmapFactory.decodeResource(resources, R.drawable.bubble_green)
         bubbleGreenImage = Bitmap.createScaledBitmap(bubbleGreenImage, 60, 60, true)
         bubbleImageArray.add(bubbleGreenImage)
@@ -103,13 +114,26 @@ class GameView : View {
         mHandler.sendEmptyMessageDelayed(0, 10)
     }
 
-    override fun onDraw(canvas: Canvas) {
-        paint.setColor(Color.RED)
-
-        for(block in blockArray) {
-            if(block.isExist)
-                canvas.drawRect(block.x, block.y, block.x+block.width, block.y+block.height, paint)
+    override fun onDraw(canvas: Canvas){
+        paint.setTypeface(Typeface.create("Bold", Typeface.BOLD))
+        for (block in blockArray) {
+            if (block.isExist) {
+                paint.setColor(Color.RED)
+                canvas.drawRect(block.x, block.y, block.x + block.width, block.y + block.height, paint)
+                paint.setColor(Color.WHITE)
+                paint.textAlign = Paint.Align.CENTER
+                canvas.drawText(block.life.toString(), block.x + block.width/2, block.y + block.height/2+17F, paint)
+                paint.textAlign = Paint.Align.LEFT
+            }
         }
+
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
+        if (!isBallMove) {
+            paint.setColor(context.resources.getColor(R.color.ballColor))
+
+            canvas.drawText("x" + ballCount.toString(), ball.x - ball.width / 2, screenLineBottom + 60F, paint)
+        }
+
         paint.setColor(Color.BLACK)
         paint.textSize = 60F
         paint.style = Paint.Style.FILL
@@ -118,18 +142,20 @@ class GameView : View {
         canvas.drawText("현재 점수: ", 100F, 200F, paint)
         canvas.drawText(score.toString(), 400F, 200F, paint)
 
-        if(isUserMove && !isBallMove){
+        if (isUserMove && !isBallMove) {
             paint.strokeWidth = 10F
             paint.setColor(Color.GREEN)
-            canvas.drawLine(ball.x+ball.width/2, ball.y, userClickX, userClickY, paint)
+            canvas.drawLine(ball.x + ball.width / 2, ball.y, userClickX, userClickY, paint)
         }
+
         paint.setColor(Color.BLACK)
         canvas.drawRect(0F, screenLineTop, screenWidth.toFloat(), screenGameTop, paint)
         canvas.drawRect(0F, screenGameBottom, screenWidth.toFloat(), screenLineBottom, paint)
         canvas.drawBitmap(pauseImage, 950F, 40F, null)
-        for(i in 0 until ballArray.size){
-            if(ballArray.get(i).isExist)
+        for (i in 0 until ballArray.size) {
+            if (ballArray.get(i).isExist) {
                 canvas.drawBitmap(ballImageArray.get(i), ballArray.get(i).x, ballArray.get(i).y, null)
+            }
         }
     }
 
@@ -167,50 +193,92 @@ class GameView : View {
                         } else if (ball.y > screenGameBottom - ball.height/2){
                             ball.y = screenGameBottom-ball.height/2
                             isBallMove = false
-                            return
+                            ballCount+=1
+                            blockThread.stopFlag = true
+                            stopFlag = true
                         }
                         sleep(10)
                     } else {
-                        this.interrupt()
                         break;
                     }
                 }
+                Log.d("MainActivityCheck","ball 끝남")
+                blockLife+=1
+                blockDown()
+                blockAdd()
             }catch(e : InterruptedException){
-                Log.d("ballThread","볼 멈춤")
+                Log.d("MainActivityCheck","볼 멈춤")
             }
         }
     }
 
     inner class BlockThread: Thread(){
+        var stopFlag = false
+        var isCrash = false
         override fun run(){
             while(true){
-                for(block in blockArray){
-                    for(ball in ballArray) {
-                        if (block.isExist && block.isBallHit(ball)) {
-                            block.isExist = false
-                            blockCount -= 1
-                            score += 100
-                            if (score > highScore) {
-                                if(!isHighScore)
-                                    isHighScore = true
-                                highScore = score
-                            }
-                            Log.d("BlockCount", blockCount.toString())
-                            if (blockCount <= 0) {
-                                this.interrupt()
-                                for (ballThread in ballThreadArray)
-                                    ballThread.stopFlag = true
-                                Log.d("isMaxScore", "GameView: " + isHighScore.toString())
-                                val intent = Intent(context, RankActivity::class.java)
-                                intent.putExtra("score", score)
-                                intent.putExtra("isMaxScore", isHighScore)
-                                (context as Activity).startActivity(intent)
-                                (context as Activity).finish()
+                if(!stopFlag){
+                    for(block in blockArray){
+                        for(ball in ballArray) {
+                            Log.d("MainActivityCheck","반복문 시작")
+                            if (block.isExist && block.isBallHit(ball)){
+                                isCrash = true
+                                Log.d("MainActivityCheck","부딪힘")
+                                Log.d("MainActivityCheck", "blockLife: " + block.life.toString())
+                                if(block.life == 0)
+                                    block.isExist = false
+                                score += 100
+                                if (score > highScore){
+                                    if(!isHighScore)
+                                        isHighScore = true
+                                    highScore = score
+                                }
                             }
                         }
                     }
+                    if(isCrash){
+                        sleep(100)
+                        isCrash = false
+                    }
+
+                }else {
+                    this.interrupt()
+                    break;
                 }
             }
+        }
+    }
+
+    fun blockAdd(){
+        val randNum = (1..100).random()
+        var num: Int
+        if(randNum>=1 && randNum<=40){ //40퍼 확률
+            num = 1
+        }else if(randNum>=41 && randNum <= 70){ //30퍼확률
+            num = 2
+        }else if(randNum>=71 && randNum <= 90){ //20퍼확률
+            num = 3
+        }else{ //10퍼 확률
+            num = 4
+        }
+
+        var storePosArray:ArrayList<Int> = ArrayList()
+        while(num+1 != storePosArray.size){
+            val pos = (0..5).random()
+            if(!storePosArray.contains(pos))
+                storePosArray.add(pos)
+        }
+        Log.d("MainActivityCheck", storePosArray.size.toString())
+        for(i in 1..num){
+            var block: Block = Block( blockPosXArray.get(storePosArray.get(i-1)), screenGameTop+blockHeight+10F, blockWidth.toInt()-15, blockHeight.toInt()-10, true)
+            block.setBlockLife(blockLife)
+            blockArray.add(block)
+        }
+    }
+
+    fun blockDown(){
+        for(block in blockArray){
+            block.y += blockHeight
         }
     }
 
@@ -225,7 +293,7 @@ class GameView : View {
                 (context as Activity).startActivityForResult(Intent(context, PauseActivity::class.java), pauseCode)
             }
             if(!isBallMove){
-                if(event.getY() >= screenGameTop && event.getY() <= screenGameBottom-100F){
+                if(event.getY() >= screenGameTop && event.getY() <= screenGameBottom-blockHeight+20F){
                     isUserMove = true
                     userClickX = event.getX()
                     userClickY = event.getY()
@@ -236,7 +304,7 @@ class GameView : View {
 
         }else if(event.action == MotionEvent.ACTION_MOVE){
             if(!isBallMove){
-                if(event.getY() >= screenGameTop && event.getY() <= screenGameBottom-100F){
+                if(event.getY() >= screenGameTop && event.getY() <= screenGameBottom-blockHeight+20F){
                     isUserMove = true
                     userClickX = event.getX()
                     userClickY = event.getY()
@@ -248,7 +316,9 @@ class GameView : View {
 
         else if(event.action == MotionEvent.ACTION_UP){
             if(!isBallMove){
-                if(event.getY() >= screenGameTop && event.getY() <= screenGameBottom-100F) {
+                if(event.getY() >= screenGameTop && event.getY() <= screenGameBottom-blockHeight+20F) {
+                    blockThread = BlockThread()
+                    blockThread.start()
                     isUserMove = false
                     isBallMove = true
                     ball.speedX = (event.getX()-(ball.x+ball.width/2))/20

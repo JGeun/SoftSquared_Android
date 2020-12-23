@@ -51,6 +51,8 @@ class GameView : View {
     private val pauseCode = 1000
 
     constructor(context: Context) : super(context){
+        (context as Activity).startActivityForResult(Intent(context, GameTimerActivity::class.java), 1000)
+
         (context.getSystemService(AppCompatActivity.WINDOW_SERVICE) as WindowManager).defaultDisplay.getMetrics(displayMetrics)
         screenHeight = displayMetrics.heightPixels
         screenWidth = displayMetrics.widthPixels
@@ -99,10 +101,7 @@ class GameView : View {
         ballThreadArray.add(BallThread(ball1))
         ballThreadArray.add(BallThread(ball2))
         ballThreadArray.add(BallThread(ball3))
-        for(i in 0 until 3)
-            ballThreadArray.get(i).start()
 
-        blockThread.start()
 
         var bubbleGreenImage = BitmapFactory.decodeResource(resources, R.drawable.bubble_green)
         bubbleGreenImage = Bitmap.createScaledBitmap(bubbleGreenImage, 60, 60, true)
@@ -122,6 +121,12 @@ class GameView : View {
         }
         isFocusable = true
         mHandler.sendEmptyMessageDelayed(0, 10)
+    }
+
+    fun threadStart(){
+        blockThread.start()
+        for(i in 0 until 3)
+            ballThreadArray.get(i).start()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -339,12 +344,14 @@ class GameView : View {
         if(event!!.action == MotionEvent.ACTION_DOWN){
             if(event.x >= 950 && event.x <= 1050 && event.y >= 40 && event.y <=140) {
                 Log.d("TouchEvent", "클릭")
+
                 blockThread.pauseFlag = true
                 for(ballThread in ballThreadArray)
                     ballThread.pauseFlag = true
                 for(effectThread in effectThreadArray)
                     effectThread.pauseFlag = true
                 (context as Activity).startActivityForResult(Intent(context, PauseActivity::class.java), pauseCode)
+                (context as Activity).overridePendingTransition(0, 0)
             }
             barX = event.getX()
             Log.d("barPositionDown", "눌린 마우스 위치" + barX.toString())

@@ -12,9 +12,7 @@
         <activity android:name=".RankActivity"/>
         <activity android:name=".PauseActivity"
             android:theme="@style/Transparent"></activity>
-        <activity android:name=".GameOverActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".GameClearActivity" />
         <activity android:name=".StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

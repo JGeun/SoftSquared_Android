@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="ballColor">#60A6EE</color>
     <color name="transparent">#A6000000</color>
+
+    <color name="blockTwo">#FF8181</color>
+    <color name="blockThree">#FFC5C5</color>
 </resources>

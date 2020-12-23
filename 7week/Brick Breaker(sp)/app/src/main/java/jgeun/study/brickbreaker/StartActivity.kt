@@ -13,14 +13,17 @@ class StartActivity : AppCompatActivity() {
         binding = ActivityStartBinding.inflate(layoutInflater)
         binding.btnStart.setOnClickListener{
             startActivity(Intent(this, MainActivity::class.java))
+            overridePendingTransition(0, 0)
             finish()
         }
 
         binding.btnAbout.setOnClickListener{
             startActivityForResult(Intent(this, ExplainActivity::class.java), 1000)
+            overridePendingTransition(0, 0)
         }
 
         binding.btnExit.setOnClickListener{
+            overridePendingTransition(0, 0)
             finish()
         }
 

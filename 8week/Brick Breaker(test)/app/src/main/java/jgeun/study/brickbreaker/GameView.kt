@@ -37,21 +37,22 @@ class GameView : View {
     private var blockArray: ArrayList<Block> = ArrayList()
     private var blockLife = 1
 
-    private lateinit var blockThread: BlockThread
+    private var blockThreadArray: ArrayList<BlockThread> = ArrayList()
 
-    private var addBallCount = 0
+    private var effectBallImage: Bitmap
+    private var addBallCount: Int = 0
     private var effectBallArray: ArrayList<EffectBall> = ArrayList()
-    private lateinit var effectBallThread: EffectBallThread
+    private var effectBallThreadArray: ArrayList<EffectBallThread> = ArrayList()
+
 
     private var ball: Ball
     private var ballArray: ArrayList<Ball> = ArrayList()
-    private var ballImageArray: ArrayList<Bitmap> = ArrayList()
+    private var ballImage: Bitmap
     private var ballThreadArray: ArrayList<BallThread> = ArrayList()
     private var ballPosX: Float
     private var ballPosY: Float
 
     private var isGameOver = false
-    private var bubbleImageArray: ArrayList<Bitmap> = ArrayList()
 
     private var isBallMove: Boolean = false
     private var isUserMove: Boolean = false
@@ -92,33 +93,30 @@ class GameView : View {
             blockPosXArray.add(blockWidth * i + 10F)
         }
 
+        effectBallImage = BitmapFactory.decodeResource(resources,R.drawable.eventball)
+        effectBallImage = Bitmap.createScaledBitmap(effectBallImage, 200, 200, false)
+
         blockDown()
         blockAdd()
-
 
         ball = Ball(screenWidth.toFloat() / 2 - screenWidth.toFloat() / 64, screenGameBottom - screenHeight.toFloat() / 128 - 10F, screenWidth / 32, screenHeight / 64)
         ballPosX = screenWidth.toFloat() / 2
         ballPosY = screenGameBottom - screenHeight / 128 - 10F
         ballArray.add(ball)
 
-        for (ball in ballArray) {
-            var ballImage = BitmapFactory.decodeResource(resources, R.drawable.heart)
-            ballImage = Bitmap.createScaledBitmap(ballImage, ball.width, ball.height, true)
-            ballImageArray.add(ballImage)
-        }
-
-        var bubbleGreenImage = BitmapFactory.decodeResource(resources, R.drawable.bubble_green)
-        bubbleGreenImage = Bitmap.createScaledBitmap(bubbleGreenImage, 60, 60, true)
-        bubbleImageArray.add(bubbleGreenImage)
-
+        ballImage = BitmapFactory.decodeResource(resources, R.drawable.heart)
+        ballImage = Bitmap.createScaledBitmap(ballImage, ball.width, ball.height, false)
         isFocusable = true
         mHandler.sendEmptyMessageDelayed(0, 10)
     }
 
     override fun onDraw(canvas: Canvas) {
+
+        //블럭
         paint.setTypeface(Typeface.create("Bold", Typeface.BOLD))
-        for (block in blockArray) {
-            if (block.isExist) {
+        for (blockThread in blockThreadArray) {
+            val block = blockThread.block
+            if (blockThread.block.isExist) {
                 paint.setColor(Color.RED)
                 canvas.drawRect(block.x, block.y, block.x + block.width, block.y + block.height, paint)
                 paint.setColor(Color.WHITE)
@@ -128,10 +126,12 @@ class GameView : View {
             }
         }
 
-        for (effectBall in effectBallArray) {
-            if (effectBall.isExist) {
+        //이벤트 볼
+        for (effectBallThread in effectBallThreadArray) {
+            if (effectBallThread.effectBall.isExist) {
+                val effectBall = effectBallThread.effectBall
                 paint.setColor(Color.GREEN)
-                canvas.drawRect(effectBall.x, effectBall.y, effectBall.x + effectBall.width, effectBall.y + effectBall.height, paint)
+                canvas.drawBitmap(effectBallImage, effectBall.x, effectBall.y, paint)
             }
         }
 
@@ -163,10 +163,10 @@ class GameView : View {
 
         if (isBallMove) {
             for (i in 0 until ballArray.size) {
-                canvas.drawBitmap(ballImageArray.get(0), ballArray.get(i).x, ballArray.get(i).y, null)
+                canvas.drawBitmap(ballImage, ballArray.get(i).x, ballArray.get(i).y, null)
             }
         } else {
-            canvas.drawBitmap(ballImageArray.get(0), ballArray.get(0).x, ballArray.get(0).y, null)
+            canvas.drawBitmap(ballImage, ballArray.get(0).x, ballArray.get(0).y, null)
         }
     }
 
@@ -203,15 +203,12 @@ class GameView : View {
                             ball.speedY = -ball.speedY
                         } else if (ball.y > screenGameBottom - ball.height / 2) {
                             ball.y = screenGameBottom - ball.height / 2
+                            ball.isExist = false
                             stopFlag = true
                         }
                         sleep(10)
-                    } else {
-                        break;
                     }
                 }
-                Log.d("MainActivityCheck", "ball 끝남")
-
             } catch (e: InterruptedException) {
                 Log.d("MainActivityCheck", "볼 멈춤")
             }
@@ -220,13 +217,10 @@ class GameView : View {
 
     fun addBall() {
         val firstBall = ballArray.get(0)
-        Log.d("MainActivityCheck", "firstBall.x = " + firstBall.x.toString())
-        for (i in 0 until addBallCount) {
+        for(i in 0 until addBallCount){
             var addBall: Ball = Ball(firstBall.x, firstBall.y, firstBall.width, firstBall.height)
             ballArray.add(addBall)
         }
-        Log.d("MainActivityCheck", "ballArray.size = " + ballArray.size.toString())
-        addBallCount = 0
     }
 
     inner class BallStartThread : Thread {
@@ -239,13 +233,13 @@ class GameView : View {
         }
 
         override fun run() {
-            Log.d("MainActivityCheck", "ballThread크기: " + ballThreadArray.size.toString())
             for (ballThread in ballThreadArray) {
                 ballThread.start()
                 sleep(100)
             }
             while (true) {
                 if (!stopFlag) {
+                    stopFlagCount = 0
                     for (ballThread in ballThreadArray) {
                         if (ballThread.stopFlag) {
                             stopFlagCount += 1
@@ -254,14 +248,15 @@ class GameView : View {
                     }
 
                     if (stopFlagCount == ballThreadArray.size) {
+
+                        ballThreadArray.clear()
                         isBallMove = false
-                        blockThread.stopFlag = true
-                        effectBallThread.stopFlag = true
-                        addBall()
                         blockLife += 1
                         blockDown()
                         blockAdd()
-                        stopFlagCount = 0
+                        addBall()
+                        addBallCount
+                        stopFlag = true
                     }
                 } else {
                     break
@@ -270,36 +265,33 @@ class GameView : View {
         }
     }
 
-    inner class BlockThread : Thread() {
+    inner class BlockThread : Thread {
+        var block: Block
         var stopFlag = false
-        var isCrash = false
+
+        constructor(block: Block) {
+            this.block = block
+        }
+
         override fun run() {
             while (true) {
                 if (!stopFlag) {
-                    for (block in blockArray) {
-                        for (ball in ballArray) {
-                            if (block.isExist && block.isBallHit(ball)) {
-                                isCrash = true
-                                Log.d("MainActivityCheck", "부딪힘")
-                                Log.d("MainActivityCheck", "blockLife: " + block.life.toString())
-                                if (block.life == 0)
-                                    block.isExist = false
-                                score += 100
-                                if (score > highScore) {
-                                    if (!isHighScore)
-                                        isHighScore = true
-                                    highScore = score
-                                }
+                    for (ball in ballArray) {
+                        if (block.isExist && block.isBallHit(ball)) {
+                            block.life -= 1
+                            if (block.life <= 0) {
+                                block.isExist = false
+                                stopFlag = true
                             }
                         }
                     }
                 } else {
-                    this.interrupt()
-                    break;
+                    break
                 }
             }
         }
     }
+
 
     fun blockAdd() {
         val randNum = (1..100).random()
@@ -323,56 +315,66 @@ class GameView : View {
         Log.d("MainActivityCheck", storePosArray.size.toString())
         var effectBall: EffectBall = EffectBall(blockPosXArray.get(storePosArray.get(0)), screenGameTop + blockHeight + 10F, 30, 30, true)
         effectBallArray.add(effectBall)
+        val effectBallThread = EffectBallThread(effectBall)
+        effectBallThread.start()
+        effectBallThreadArray.add(effectBallThread)
 
         for (i in 1..num) {
             var block: Block = Block(blockPosXArray.get(storePosArray.get(i)), screenGameTop + blockHeight + 10F, blockWidth.toInt() - 15, blockHeight.toInt() - 10, true)
             block.setBlockLife(blockLife)
             blockArray.add(block)
+            val blockThread = BlockThread(block)
+            blockThread.start()
+            blockThreadArray.add(blockThread)
+
         }
     }
 
     fun blockDown() {
-        for (block in blockArray) {
-            if (block.isExist) {
-                block.y += blockHeight
-                if (block.y >= screenGameBottom - blockHeight + 10F)
+        for (blockThread in blockThreadArray) {
+            if (blockThread.block.isExist) {
+                blockThread.block.y += blockHeight
+                if (blockThread.block.y >= screenGameBottom - blockHeight + 10F)
                     isGameOver = true
             }
-
         }
         for (effectBall in effectBallArray)
             effectBall.y += blockHeight
 
         if (isGameOver) {
             Log.d("MainActivityCheck", " GameOver")
-            blockThread.stopFlag = true
-            effectBallThread.stopFlag = true
+            for (blockThread in blockThreadArray)
+                blockThread.stopFlag = true
+            for (effectBallThread in effectBallThreadArray)
+                effectBallThread.stopFlag = true
             Thread.sleep(1000)
             (context as Activity).startActivity(Intent(context, RankActivity::class.java))
         }
     }
 
-    inner class EffectBallThread : Thread() {
+    inner class EffectBallThread : Thread{
+        var effectBall: EffectBall
         var stopFlag = false
+
+        constructor(effectBall: EffectBall){
+            this.effectBall = effectBall
+        }
         override fun run() {
             while (true) {
                 if (!stopFlag) {
-                    for (effectBall in effectBallArray) {
-                        for (ball in ballArray) {
-                            if (effectBall.isExist && effectBall.isBallHit(ball)) {
-                                Log.d("MainActivityCheck", "EffectBall부딪힘")
-                                effectBall.isExist = false
-                                addBallCount += 1
-                            }
+                    for (ball in ballArray) {
+                        if (ball.isExist && effectBall.isBallHit(ball)) {
+                            effectBall.isExist = false
+                            addBallCount += 1
+                            Log.d("MainActivityCheck", "addBallCount: " + addBallCount.toString())
                         }
                     }
-                } else {
-                    return;
                 }
             }
         }
     }
 
+/*
     inner class BallDownThread : Thread() {
 
         override fun run() {
@@ -381,14 +383,14 @@ class GameView : View {
             }
 
         }
-    }
+    }*/
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         var barX = 0F
         if (event!!.action == MotionEvent.ACTION_DOWN) {
             if (event.x >= 950 && event.x <= 1050 && event.y >= 40 && event.y <= 140) {
                 Log.d("TouchEvent", "클릭")
-                blockThread.interrupt()
+
                 for (ballThread in ballThreadArray)
                     ballThread.stopFlag = true
                 (context as Activity).startActivityForResult(Intent(context, PauseActivity::class.java), pauseCode)
@@ -416,15 +418,14 @@ class GameView : View {
         } else if (event.action == MotionEvent.ACTION_UP) {
             if (!isBallMove) {
                 if (!isGameOver && event.getY() >= screenGameTop && event.getY() <= screenGameBottom - blockHeight + 20F) {
-                    blockThread = BlockThread()
-                    blockThread.start()
-                    effectBallThread = EffectBallThread()
-                    effectBallThread.start()
+
                     isUserMove = false
                     isBallMove = true
 
-                    ballThreadArray.clear()
                     for (ball in ballArray) {
+                        ball.x = ballArray.get(0).x
+                        ball.y = ballArray.get(0).y
+                        ball.isExist = true
                         ball.speedX = (event.getX() - (ball.x + ball.width / 2)) / 20
                         ball.speedY = (event.getY() - ball.y) / 20
                         val ballThread = BallThread(ball)

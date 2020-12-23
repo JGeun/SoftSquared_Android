@@ -1,7 +1,5 @@
 package jgeun.study.brickbreaker
 
-import android.util.Log
-
 class EffectBall {
     var x = 0F
     var y = 0F

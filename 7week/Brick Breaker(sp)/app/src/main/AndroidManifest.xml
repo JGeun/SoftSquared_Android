@@ -9,13 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BrickBreaker">
-        <activity android:name=".ExplainActivity"></activity>
+        <activity android:name=".GameTimerActivity"
+            android:theme="@style/Transparent" />
+        <activity android:name=".StartActivity" />
+        <activity android:name=".ExplainActivity" />
         <activity android:name=".RankActivity" />
         <activity
             android:name=".PauseActivity"
             android:theme="@style/Transparent" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".StartActivity">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

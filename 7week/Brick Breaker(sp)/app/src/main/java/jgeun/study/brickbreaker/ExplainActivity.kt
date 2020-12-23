@@ -12,7 +12,10 @@ class ExplainActivity : AppCompatActivity() {
         binding = ActivityExplainBinding.inflate(layoutInflater)
 
         binding.btnBack.setOnClickListener{
+
+           // startActivity()
             finish()
+            overridePendingTransition(0, 0)
         }
         setContentView(binding.root)
     }

@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var gameView: GameView
     private val pauseCode = 1000
     private var isContinue = false
+    private var isTimerFinish = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivityCheck", isFinish.toString())
                 if(isFinish){
                     startActivity(Intent(this, StartActivity::class.java))
+                    overridePendingTransition(0, 0)
                     finish()
                 }
 
@@ -54,6 +56,13 @@ class MainActivity : AppCompatActivity() {
                         effectThread.pauseFlag = false
                     gameView.blockThread.pauseFlag = false
                 }
+
+                isTimerFinish = data.getBooleanExtra("isTimerFinish", false)
+                if(isTimerFinish){
+                    Log.d("isTimerFinish", isTimerFinish.toString())
+                    gameView.threadStart()
+                }
+                isTimerFinish = false
             }
         }
     }

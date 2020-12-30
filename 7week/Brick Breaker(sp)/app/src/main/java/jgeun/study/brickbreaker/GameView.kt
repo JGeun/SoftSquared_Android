@@ -57,8 +57,8 @@ class GameView : View {
         screenHeight = displayMetrics.heightPixels
         screenWidth = displayMetrics.widthPixels
 
-        screenGameBottom = screenHeight.toFloat()
-        screenLineBottom = screenGameBottom+10F
+        screenGameBottom = screenHeight.toFloat() - 500F
+        screenLineBottom = screenGameBottom + 10F
 
         pauseImage = BitmapFactory.decodeResource(resources, R.drawable.btn_stop)
         pauseImage = Bitmap.createScaledBitmap(pauseImage, 100, 100, true)
@@ -80,13 +80,13 @@ class GameView : View {
             blockArray.add(block)
         }
 
-        bar = Bar((screenWidth/2).toFloat(), (screenHeight-screenHeight/32).toFloat(), screenWidth/4, screenHeight/32)
+        bar = Bar((screenWidth.toFloat()/2-screenWidth.toFloat()/8-20F), (screenGameBottom-screenHeight/32).toFloat(), screenWidth/4, screenHeight/32)
         barImage = BitmapFactory.decodeResource(resources, R.drawable.heart)
         barImage = Bitmap.createScaledBitmap(barImage, bar.width, bar.height, true)
 
-        var ball1 = Ball(600F, 2000F, screenWidth/32, screenHeight/64, 5F, -5F)
-        var ball2 = Ball(500F, 2000F, screenWidth/32, screenHeight/64, -6F, -6F)
-        var ball3 = Ball(700F, 2000F, screenWidth/32, screenHeight/64, 7F, -7F)
+        var ball1 = Ball(500F, screenGameBottom-bar.height-screenHeight/128-10F, screenWidth/32, screenHeight/64, 5F, -5F)
+        var ball2 = Ball(400F, screenGameBottom-bar.height-screenHeight/128-10F, screenWidth/32, screenHeight/64, -6F, -6F)
+        var ball3 = Ball(600F, screenGameBottom-bar.height-screenHeight/128-10F, screenWidth/32, screenHeight/64, 7F, -7F)
 
         ballArray.add(ball1)
         ballArray.add(ball2)
@@ -145,7 +145,7 @@ class GameView : View {
         canvas.drawText(score.toString(), 400F, 200F, paint)
 
         canvas.drawRect(0F, screenLineTop, screenWidth.toFloat(), screenGameTop, paint)
-        canvas.drawRect(0F, screenLineTop, screenWidth.toFloat(), screenGameTop, paint)
+        canvas.drawRect(0F, screenGameBottom, screenWidth.toFloat(), screenLineBottom, paint)
         canvas.drawBitmap(pauseImage, 950F, 40F, null)
         for(i in 0 until ballArray.size){
             if(ballArray.get(i).isExist)
@@ -195,7 +195,7 @@ class GameView : View {
                             } else if (ball.y < screenGameTop ) {                    // 천정
                                 ball.y = screenGameTop.toFloat()
                                 ball.speedY = -ball.speedY
-                            } else if (ball.y > screenHeight - ball.height/2){
+                            } else if (ball.y > screenGameBottom - ball.height/2){
                                 this.interrupt()
                                 ball.isExist = false
                                 life -= 1
@@ -208,9 +208,9 @@ class GameView : View {
                                     (context as Activity).startActivity(intent)
                                     (context as Activity).finish()
                                 }
-                            } else if (ball.y > screenHeight - ball.height / 2 - bar.height) {        // 바닥
+                            } else if (ball.y > screenGameBottom - ball.height / 2 - bar.height) {        // 바닥
                                 if (isBarHit()) {
-                                    ball.y = (screenHeight - ball.height / 2 - bar.height).toFloat()
+                                    ball.y = (screenGameBottom - ball.height / 2 - bar.height).toFloat()
                                     ball.speedY = -ball.speedY
                                 }
                             }
@@ -260,7 +260,7 @@ class GameView : View {
                                     Log.d("isMaxScore", "GameView: " + isHighScore.toString())
                                     val intent = Intent(context, RankActivity::class.java)
                                     intent.putExtra("score", score)
-                                    intent.putExtra("isMaxScore", isHighScore)
+                                    intent.putExtra("isHighScore", isHighScore)
                                     (context as Activity).startActivity(intent)
                                     (context as Activity).finish()
                                 }

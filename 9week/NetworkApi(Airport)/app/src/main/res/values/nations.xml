@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="nations_array">
+        <item>KOJ(가고시마)</item>
+        <item>KHH(가오슝)</item>
+        <item>KMQ(고마쓰)</item>
+        <item>GOT(고테버그)</item>
+        <item>GUM(괌)</item>
+        <item>CAN(광저우)</item>
+        <item>KMJ(구마모토)</item>
+        <item>NGS(나가사키)</item>
+        <item>NGO(나고야)</item>
+        <item>NNG(난닝)</item>
+        <item>NKG(난징)</item>
+        <item>JFK(뉴욕)</item>
+        <item>DAD(다낭)</item>
+        <item>DLC(다롄)</item>
+        <item>DAC(다카)</item>
+        <item>TAE(대구)</item>
+        <item>DFW(댈러스)</item>
+        <item>DEL(델리)</item>
+        <item>NRT(도쿄/나리타)</item>
+        <item>DXB(두바이)</item>
+        <item>DTW(디트로이트)</item>
+        <item>LAS(라스베이가스)</item>
+        <item>LHR(런던)</item>
+        <item>FCO(로마)</item>
+        <item>LAX(로스앤젤레스)</item>
+        <item>LUX(룩셈부르크)</item>
+        <item>LJG(리장)</item>
+        <item>MNL(마닐라)</item>
+        <item>MAD(마드리드)</item>
+        <item>MIA(마이애미)</item>
+        <item>MFM(마카오)</item>
+        <item>MLE(말레)</item>
+        <item>MEL(멜버른)</item>
+        <item>SVO(모스크바)</item>
+        <item>BOM(뭄바이)</item>
+        <item>MUC(뮌헨)</item>
+        <item>BAH(바레인)</item>
+        <item>WAW(바르샤바)</item>
+        <item>BCN(바르셀로나)</item>
+        <item>BKK(방콕)</item>
+        <item>YVR(밴쿠버)</item>
+        <item>PEK(베이징)</item>
+        <item>PUS(부산)</item>
+        <item>BUE(부에노스아이레스)</item>
+
+
+
+
+    </string-array>
+</resources>

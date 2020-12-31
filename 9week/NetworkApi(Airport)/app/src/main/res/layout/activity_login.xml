@@ -89,17 +89,23 @@
         android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"/>
 
-    <com.nhn.android.naverlogin.ui.view.OAuthLoginButton
-        android:id="@+id/login_btn_naverLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="42dp"/>
-
-    <Button
+    <ImageButton
+        android:id="@+id/btn_naverLogin"
         android:layout_width="200dp"
         android:layout_height="50dp"
+        android:src="@null"
+        android:background="@drawable/btn_naverlogin"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"/>
+
+    <ImageButton
+        android:id="@+id/btn_kakaoLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Kakao Login"
         android:textColor="#777777"
-        android:backgroundTint="#ffff00"
+        android:background = "@drawable/btn_kakao_login"
         android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:src="@null"/>
 </LinearLayout>

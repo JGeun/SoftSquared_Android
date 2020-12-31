@@ -1,2 +1,3 @@
+include ':naveridlogin_android_sdk_4.2.0'
 include ':app'
 rootProject.name = "NetworkApi(Airport)"

@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">NetworkApi(Airport)</string>
+    <string name="app_name">NetworkApi</string>
+    <string name="kakao_app_key">0f75d0bec9d92baaafe3f54629e955eb</string>
+
+    <string name="naver_client_id">Rz4njR86A5mcC7nwTcIb</string>
+    <string name="naver_client_secret">BriQ0NO0Mg</string>
+    <string name="naver_client_name">NetworkApi</string>
 </resources>

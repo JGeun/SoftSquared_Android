@@ -43,7 +43,7 @@ class CustomAdapter(context: Context, private val businessCardArrayList: ArrayLi
                 businessCardArrayList[position].isSwitchChecked= false
             }
             goMain.putExtra("arrayList", businessCardArrayList)
-            view.context.startActivity(goMain)
+            (view.context as MainActivity).startActivity(goMain)
         }
         view.write.setOnClickListener {
             val goModifiy: Intent = Intent(view.context, ModifyActivity::class.java)

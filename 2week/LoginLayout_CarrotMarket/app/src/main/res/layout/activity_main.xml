@@ -62,10 +62,11 @@
                 android:id="@+id/profile"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:paddingLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/basicprofile" />
+                android:layout_marginRight="10dp"
+                android:paddingLeft="10dp"
+                android:src="@drawable/basicprofile"
+                tools:srcCompat="@drawable/basicprofile"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
